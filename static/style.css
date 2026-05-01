@@ -1,98 +1,246 @@
+/* ROOT */
+
 :root {
-  --bg: #0a0a0a;
-  --ac: #151515;
-  --se: #101010;
-  --fg: #FFF;
-  
-  --text-size: max(0.5vw, 1.5vh);
-  --text-size-title: max(1vw, 3vh);
+    --bg: #0f1117aa;
+    --se: #161a2399;
+    --te: #141824cc;
+    --ac: #5b8cff;
+    --fg: #655f9c;
+
+    --font-color: #e6e9ef;
+    --font-color-se: #aab1c3;
+    --font-color-ac: #e6e3ff;
+
+    --bg-grad: linear-gradient(160deg, var(--bg), var(--se));
+    --bg-img: url(background.png);
+
+    --border: #2a2f3a;
+    --radius: max(1vw, 3vh);
+    --radius-sm: max(0.5vw, 1.5vh);
+
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.25);
+    --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.35);
+
+    --transition-fast: 0.15s ease;
+    --transition: 0.4s ease;
+
+    --text-size: max(0.5vw, 1.5vh);
+    --text-size-title: max(1vw, 3vh);
 }
 
+:root.light {
+    --bg: #fff;
+    --ac: #567fdd;
+    --se: #2341a0;
+    --fg: #232859;
+    --font-color: #000;
 
-html, body {
-  margin: 0;
-  padding: 0;
-	font-family: "Honk", system-ui;
+    --text-size: max(0.5vw, 1.5vh);
+    --text-size-title: max(1vw, 3vh);
+}
+
+/* GENERAL */
+
+@keyframes bgMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Honk", system-ui;
 }
 
 body {
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--bg);
-  color: var(--fg);
-  display: flex;
-  flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+
+    background: linear-gradient(160deg, var(--bg), var(--te), var(--se));
+
+    background-size: 300% 200%;
+    animation: bgMove 8s ease infinite;
+
+    display: flex;
+    flex-direction: row;
+    color: var(--font-color);
 }
 
+i {
+    font-size: var(--text-size);
+    color: var(--font-color);
+}
+
+.text-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* canvas */
+
+#bg-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background: var(--bg);
+    filter: blur(1px) saturate(2) brightness(1.5) contrast(1.3);
+}
+
+/* PANNEL */
+
 .pannel {
-  width: 20vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: var(--ac);
+    width: 20vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.pannel-wrapper {
+    width: 80%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius);
+    background: var(--se);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+    transition: all var(--transition);
+}
+.pannel-wrapper:hover {
+    box-shadow: var(--shadow-hover);
 }
 
 .pannel-header {
-  width: 100%;
-  height: 25%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    height: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .pannel-menu {
-  width: 100%;
-  height: 70%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .pannel-footer {
-  width: 100%;
-  height: 5%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    height: 2%;
+    font-size: var(--text-size);
+    display: flex;
+    align-items: start;
+    justify-content: center;
 }
 
+/* CONTENT */
+
 .content {
-  width: 80vw;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: start;
+    width: 80vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    overflow-y: scroll;
 }
 
 /* Home */
 
 .partage {
-  width: 100%;
-  height: 20vh;
-  background-color: var(--se);
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: center;
+    width: 100%;
+    height: 25vh;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: center;
+    margin: 3vh 0 3vh 0;
 }
 
 .partage-title {
-  font-size: var(--text-size-title);
+    font-size: var(--text-size-title);
 }
 
 .partage-input {
-  width: 100%;
-  height: 30%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .partage-description {
-  width: 60%;
-  height: 70%
+    width: 60%;
+    height: 100%;
+    padding: 1vh;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--se);
+    color: var(--font-color-ac);
+}
+
+.home-content-wrapper {
+    width: 95%;
+    height: 94vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    border-radius: var(--radius);
+    margin: 3vh 0 3vh 0;
+    background: var(--se);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition);
+}
+
+.home-content {
+    width: 96%;
+    height: 100%;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    overflow-y: hidden;
+}
+
+/* experiments */
+.pannel-wrapper,
+.home-content {
+    background: var(--se);
+    transition: background 0.1s ease;
+}
+
+/* spotlight toujours calculé mais visible seulement dans l'élément */
+.pannel-wrapper,
+.home-content-wrapper,
+.home-content {
+    background:
+        radial-gradient(
+            circle 30vw at var(--x, -999px) var(--y, -999px),
+            rgba(91, 140, 255, 0.08),
+            rgba(139, 111, 255, 0.04),
+            transparent 30%
+        ),
+        var(--se);
 }
