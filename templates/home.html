@@ -8,107 +8,40 @@
 <div class="header">
     <p class="header-title">Une idée ? Un projet à partager ?</p>
     <div class="header-input">
-        <input class="header-description" type="text" placeholder="Décris ton Idée / Projet"></input>
+        <div class="header-input-top">
+            <input class="header-title-input" type="text" placeholder="Titre"></input>
+            <input class="header-description-input" type="text" placeholder="Décris ton Idée / Projet"></input>
+        </div>
+        <div class="header-input-bottom">
+            <input class="header-author-input" type="text" placeholder="Nom"></input>
+            <input class="header-link-input" type="text" placeholder="Lien"></input>
+        </div>
     </div>
 </div>
 <div class="home-content-wrapper">
     <div class="home-content">
 
+        {% for project in data %}
         <div class="card">
-            <img class="card-img" src=""></img>
-            <div class="card-content">
-                <div class="card-title">
-                    <p>Title</p>
-                </div>
-                <div class="card-description">
-                    <p>Description</p>
-                </div>
-            </div>
-            <div class="card-infos">
-                <p>Par :</p>
-                <p>le </p>
-            </div>
-        </div>
+            <img class="card-img" src="{{ project.image or '' }}"></img>
 
-        <div class="card">
-            <img class="card-img" src=""></img>
             <div class="card-content">
                 <div class="card-title">
-                    <p>Title</p>
+                    <p>{{ project.title }}</p>
                 </div>
-                <div class="card-description">
-                    <p>Description</p>
-                </div>
-            </div>
-            <div class="card-infos">
-                <p>Par :</p>
-                <p>le </p>
-            </div>
-        </div>
 
-        <div class="card">
-            <img class="card-img" src=""></img>
-            <div class="card-content">
-                <div class="card-title">
-                    <p>Title</p>
-                </div>
                 <div class="card-description">
-                    <p>Description</p>
+                    <p>{{ project.description }}</p>
                 </div>
             </div>
-            <div class="card-infos">
-                <p>Par :</p>
-                <p>le </p>
-            </div>
-        </div>
 
-        <div class="card">
-            <img class="card-img" src=""></img>
-            <div class="card-content">
-                <div class="card-title">
-                    <p>Title</p>
-                </div>
-                <div class="card-description">
-                    <p>Description</p>
-                </div>
-            </div>
             <div class="card-infos">
-                <p>Par :</p>
-                <p>le </p>
+                <p>Par : {{ project.author }}</p>
+                <p>le {{ project.date }}</p>
             </div>
         </div>
+        {% endfor %}
 
-        <div class="card">
-            <img class="card-img" src=""></img>
-            <div class="card-content">
-                <div class="card-title">
-                    <p>Title</p>
-                </div>
-                <div class="card-description">
-                    <p>Description</p>
-                </div>
-            </div>
-            <div class="card-infos">
-                <p>Par :</p>
-                <p>le </p>
-            </div>
-        </div>
-
-        <div class="card">
-            <img class="card-img" src=""></img>
-            <div class="card-content">
-                <div class="card-title">
-                    <p>Title</p>
-                </div>
-                <div class="card-description">
-                    <p>Description</p>
-                </div>
-            </div>
-            <div class="card-infos">
-                <p>Par :</p>
-                <p>le </p>
-            </div>
-        </div>
     </div>
 </div>
 {% endblock %}
