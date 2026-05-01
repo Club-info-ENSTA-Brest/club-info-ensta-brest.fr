@@ -25,36 +25,52 @@ document.addEventListener("mousemove", (e) => {
   mouseX = e.clientX;
   mouseY = e.clientY;
 
-  document.querySelectorAll(".pannel-wrapper, .home-content").forEach((el) => {
-    const rect = el.getBoundingClientRect();
+  document
+    .querySelectorAll(".pannel-wrapper, .home-content, .home-content-wrapper")
+    .forEach((el) => {
+      const rect = el.getBoundingClientRect();
 
-    const x = mouseX - rect.left;
-    const y = mouseY - rect.top;
+      const x = mouseX - rect.left;
+      const y = mouseY - rect.top;
 
-    el.style.setProperty("--x", `${x}px`);
-    el.style.setProperty("--y", `${y}px`);
-  });
+      el.style.setProperty("--x", `${x}px`);
+      el.style.setProperty("--y", `${y}px`);
+    });
 });
 
 // selector highlight
 
 const items = document.querySelectorAll(".menu-item");
 const highlight = document.querySelector(".menu-highlight");
-const menu = document.querySelector(".pannel-menu");
 
-function moveHighlight(el) {
-  const offset = el.offsetTop;
-  highlight.style.transform = `translateY(${offset}px)`;
+function move(el) {
+  if (!el) return;
+  highlight.style.transform = `translateY(${el.offsetTop}px)`;
 }
 
-// init (Home par défaut)
-moveHighlight(items[0]);
-items[0].classList.add("active");
+function setActiveFromUrl() {
+  const path = window.location.pathname;
 
-items.forEach((item) => {
-  item.addEventListener("click", () => {
-    items.forEach((i) => i.classList.remove("active"));
-    item.classList.add("active");
-    moveHighlight(item);
+  items.forEach((item) => {
+    item.classList.remove("active");
   });
-});
+
+  let active = items[0];
+
+  items.forEach((item) => {
+    const page = item.dataset.page;
+
+    if ((path === "/" && page === "home") || path.includes(page)) {
+      active = item;
+    }
+  });
+
+  active.classList.add("active");
+  move(active);
+}
+
+// initial load
+document.addEventListener("DOMContentLoaded", setActiveFromUrl);
+
+// after HTMX swaps
+document.body.addEventListener("htmx:afterSwap", setActiveFromUrl);

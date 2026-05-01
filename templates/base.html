@@ -9,10 +9,15 @@
             rel="stylesheet"
             href="{{ url_for('static', filename='style.css') }}"
         />
+
+        <!-- Font Awesome -->
         <link
             rel="stylesheet"
             href="https://use.fontawesome.com/releases/v6.5.0/css/all.css"
         />
+
+        <!-- HTMX -->
+        <script src="https://unpkg.com/htmx.org@1.9.12"></script>
     </head>
 
     <body>
@@ -37,17 +42,41 @@
                 <div class="pannel-menu-wrapper">
                     <div class="pannel-menu">
                         <div class="menu-highlight"></div>
-                        <div class="menu-item">
-                            <p>Home</p>
+
+                        <div class="menu-item" data-page="home">
+                            <a
+                                hx-get="/"
+                                hx-push-url="true"
+                                hx-target="#content"
+                                >Home</a
+                            >
                         </div>
-                        <div class="menu-item">
-                            <p>Tutos</p>
+
+                        <div class="menu-item" data-page="tutos">
+                            <a
+                                hx-get="/tutos"
+                                hx-push-url="true"
+                                hx-target="#content"
+                                >Tutos</a
+                            >
                         </div>
-                        <div class="menu-item">
-                            <p>Nos Réseaux</p>
+
+                        <div class="menu-item" data-page="resea">
+                            <a
+                                hx-get="/reseaux"
+                                hx-push-url="true"
+                                hx-target="#content"
+                                >Nos Réseaux</a
+                            >
                         </div>
-                        <div class="menu-item">
-                            <p>Projets ENSTAsiens</p>
+
+                        <div class="menu-item" data-page="projets">
+                            <a
+                                hx-get="/projets_enstasiens"
+                                hx-push-url="true"
+                                hx-target="#content"
+                                >Projets ENSTAsiens</a
+                            >
                         </div>
                     </div>
                 </div>
@@ -58,7 +87,7 @@
             </div>
         </div>
 
-        <div class="content">
+        <div class="content" id="content" hx-target="this" hx-swap="innerHTML">
             {% block content %}
             <!-- content -->
             {% endblock %}
