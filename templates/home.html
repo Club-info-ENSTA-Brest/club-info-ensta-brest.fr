@@ -1,17 +1,12 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<title>Club Info ENSTA - Campus de Brest</title>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-	</head>
+{% extends "base.html" %}
 
-	<body>
-		<section>
-			<p> Club Info ENSTA - Campus de Brest
-		</section>
+{% block title %}Home{% endblock %}
 
-		<script src="{{ url_for('static', filename='script.js') }}"></script>
-	</body>
-
-</html>
+{% block content %}
+<div class="partage">
+    <p class="partage-title">Une idée ? Un projet à partager ?</p>
+    <div class="partage-input">
+        <input class="partage-description" type="text" placeholder="Décris ton Idée / Projet"></input>
+    </div>
+</div>
+{% endblock %}
