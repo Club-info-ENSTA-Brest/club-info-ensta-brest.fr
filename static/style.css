@@ -133,13 +133,66 @@ i {
     justify-content: center;
 }
 
-.pannel-menu {
+.pannel-menu-wrapper {
     width: 100%;
-    height: 70%;
+    height: 60%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+.pannel-menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    position: relative;
+}
+
+.menu-highlight {
+    position: absolute;
+    top: 0;
+    left: 10%;
+    width: 80%;
+    height: 6vh;
+
+    border-radius: var(--radius-sm);
+
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 20px rgba(120, 120, 255, 0.15),
+        inset 0 0 10px rgba(255, 255, 255, 0.05);
+
+    transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.2, 1);
+    z-index: 0;
+}
+
+.menu-item {
+    height: 6vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.menu-item p {
+    z-index: 2;
+    color: var(--font-color-se);
+    transition: color 0.2s ease;
+}
+
+.menu-item.active p {
+    color: var(--font-color-ac);
 }
 
 .pannel-footer {
