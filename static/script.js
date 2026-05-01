@@ -1,20 +1,36 @@
-const outer = document.querySelector(".content");
-const inner = document.querySelector(".home-content");
+let outer = document.querySelector(".content");
+let inner = null;
 
-function updateScrollState() {
-  const atBottom =
-    outer.scrollTop + outer.clientHeight >= outer.scrollHeight - 1;
+function initScrollSystem() {
+  outer = document.querySelector(".content");
+  inner = document.querySelector(".home-content");
 
-  if (atBottom) {
-    inner.style.overflowY = "scroll";
-  } else {
-    inner.style.overflowY = "hidden";
-    inner.scrollTop = 0; // optional: reset inner scroll
+  if (!outer || !inner) return;
+
+  function updateScrollState() {
+    const atBottom =
+      outer.scrollTop + outer.clientHeight >= outer.scrollHeight - 1;
+
+    if (atBottom) {
+      inner.style.overflowY = "scroll";
+    } else {
+      inner.style.overflowY = "hidden";
+      inner.scrollTop = 0;
+    }
   }
+
+  // remove old listener to avoid duplicates
+  outer.removeEventListener("scroll", updateScrollState);
+
+  outer.addEventListener("scroll", updateScrollState);
+  updateScrollState();
 }
 
-outer.addEventListener("scroll", updateScrollState);
-window.addEventListener("load", updateScrollState);
+// initial load
+document.addEventListener("DOMContentLoaded", initScrollSystem);
+
+// AFTER HTMX swaps content
+document.body.addEventListener("htmx:afterSwap", initScrollSystem);
 
 // spotlight effect
 
