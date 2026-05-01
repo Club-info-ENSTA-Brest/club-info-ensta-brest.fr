@@ -1,11 +1,11 @@
 /* ROOT */
 
 :root {
-    --bg: #0f1117aa;
-    --se: #161a2399;
-    --te: #141824cc;
-    --ac: #5b8cff;
-    --fg: #655f9c;
+    --bg: #0d0d0dcc;
+    --se: #0f0f0fcc;
+    --te: #1c1c1ccc;
+    --ac: #121017cc;
+    --fg: #1f1f1fcc;
 
     --font-color: #e6e9ef;
     --font-color-se: #aab1c3;

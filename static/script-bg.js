@@ -17,7 +17,7 @@ for (let i = 0; i < 100; i++) {
     y: Math.random() * canvas.height,
     vx: (Math.random() - 0.5) * (2 * Math.random()),
     vy: (Math.random() - 0.5) * (2 * Math.random()),
-    r: 4,
+    r: 2,
   });
 }
 
@@ -34,7 +34,7 @@ function animate() {
     if (d.y < 0) d.y = canvas.height;
     if (d.y > canvas.height) d.y = 0;
 
-    ctx.fillStyle = "rgba(170, 177, 195, 0.6)";
+    ctx.fillStyle = "rgba(230, 230, 230, 0.6)";
     ctx.beginPath();
     ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
     ctx.fill();
