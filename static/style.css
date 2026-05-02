@@ -29,6 +29,7 @@
 
     --text-size: max(0.5vw, 1.5vh);
     --text-size-title: max(1vw, 3vh);
+    --text-size-small: max(0.33vw, 1vh);
 }
 
 :root.light {
@@ -282,6 +283,17 @@ a {
     justify-content: center;
     flex-direction: column;
 }
+
+
+.header-input-form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
 
 .header-input-top {
     width: 100%;
@@ -537,7 +549,7 @@ a {
 }
 
 .card-infos {
-    width: 10%;
+    width: 15%;
     height: 80%;
     display: flex;
     flex-direction: column;
@@ -545,9 +557,5 @@ a {
     justify-content: center;
     margin-left: 4vw;
     border-left: 1px solid var(--border);
-}
-
-    width: 60%;
-    height: 100%;
-    display: flex;
+    font-size: var(--text-size);
 }

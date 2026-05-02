@@ -8,34 +8,36 @@
 <div class="header">
     <p class="header-title">Une idée ? Un projet à partager ?</p>
     <div class="header-input">
-        <div class="header-input-top">
-            <input class="header-title-input" name="title" type="text" placeholder="Titre"></input>
-            <input class="header-description-input" name="description" type="text" placeholder="Décris ton Idée / Projet"></input>
-            <div class="form-row-top">
-                <select class="select-input" name="type" required>
-                    <option value="" disabled selected>Type</option>
-                    <option value="partage">Partager un projet</option>
-                    <option value="idee">Idée</option>
-                    <option value="aide">Demander de l'aide</option>
-                    <option value="autre">Autre</option>
-                </select>
+        <form class="header-input-form" method="POST" action="{{ url_for('home') }}">
+            <div class="header-input-top">
+                <input class="header-title-input" name="title" type="text" placeholder="Titre"></input>
+                <input class="header-description-input" name="description" type="text" placeholder="Décris ton Idée / Projet"></input>
+                <div class="form-row-top">
+                    <select class="select-input" name="type-input" required>
+                        <option value="" disabled selected>Type</option>
+                        <option value="partage">Partager un projet</option>
+                        <option value="idee">Idée</option>
+                        <option value="aide">Demander de l'aide</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
             </div>
-        </div>
-        <div class="header-input-bottom">
-            <input class="header-author-input" name="author" type="text" placeholder="Nom"></input>
-            <input class="header-link-input" name="link" type="url" placeholder="Lien"></input>
-            <div class="form-row-bottom">
-                <button class="button-input" type="submit">Publier le projet</button>
+            <div class="header-input-bottom">
+                <input class="header-author-input" name="author" type="text" placeholder="Nom"></input>
+                <input class="header-link-input" name="link" type="url" placeholder="Lien du projet / lien image"></input>
+                <div class="form-row-bottom">
+                    <button class="button-input" type="submit">Publier le projet</button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 <div class="home-content-wrapper">
     <div class="home-content">
 
         {% for project in data %}
-        <div class="card">
-            <img class="card-img" src="{{ project.image or '' }}"></img>
+        <div class="card" onclick="window.open('{{ project.link }}', '_blank')">
+            <img class="card-img" src="{{ project.image or '' }}"></imgç>
 
             <div class="card-content">
                 <div class="card-title">
@@ -50,6 +52,7 @@
             <div class="card-infos">
                 <p>Par : {{ project.author }}</p>
                 <p>le {{ project.date }}</p>
+                <p>TYPE :  {{ project.type }}</p>
             </div>
         </div>
         {% endfor %}
