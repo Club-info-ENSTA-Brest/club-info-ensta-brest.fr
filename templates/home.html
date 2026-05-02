@@ -9,12 +9,24 @@
     <p class="header-title">Une idée ? Un projet à partager ?</p>
     <div class="header-input">
         <div class="header-input-top">
-            <input class="header-title-input" type="text" placeholder="Titre"></input>
-            <input class="header-description-input" type="text" placeholder="Décris ton Idée / Projet"></input>
+            <input class="header-title-input" name="title" type="text" placeholder="Titre"></input>
+            <input class="header-description-input" name="description" type="text" placeholder="Décris ton Idée / Projet"></input>
+            <div class="form-row-top">
+                <select class="select-input" name="type" required>
+                    <option value="" disabled selected>Type</option>
+                    <option value="partage">Partager un projet</option>
+                    <option value="idee">Idée</option>
+                    <option value="aide">Demander de l'aide</option>
+                    <option value="autre">Autre</option>
+                </select>
+            </div>
         </div>
         <div class="header-input-bottom">
-            <input class="header-author-input" type="text" placeholder="Nom"></input>
-            <input class="header-link-input" type="text" placeholder="Lien"></input>
+            <input class="header-author-input" name="author" type="text" placeholder="Nom"></input>
+            <input class="header-link-input" name="link" type="url" placeholder="Lien"></input>
+            <div class="form-row-bottom">
+                <button class="button-input" type="submit">Publier le projet</button>
+            </div>
         </div>
     </div>
 </div>
