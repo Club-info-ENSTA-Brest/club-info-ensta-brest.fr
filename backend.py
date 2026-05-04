@@ -195,7 +195,13 @@ def home():
 
     db = get_db()
     projects = db.execute("SELECT * FROM projects ORDER BY id DESC").fetchall()
-    return render("home.html", data=projects)
+    return render(
+        "home.html",
+        data=[
+            projects,
+            [{"title": "Titre", "description": "Description", "date": "01/01/2026"}],
+        ],
+    )
 
 
 if __name__ == "__main__":

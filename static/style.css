@@ -483,6 +483,7 @@ a {
     overflow-y: hidden;
 }
 
+/* card */
 .card {
     width: calc(100% - 2px);
     aspect-ratio: 8/1;
@@ -550,12 +551,109 @@ a {
 
 .card-infos {
     width: 15%;
-    height: 80%;
+    height: 40%;
     display: flex;
     flex-direction: column;
-    align-items: end;
+    align-items: start;
     justify-content: center;
     margin-left: 4vw;
+    padding: 4vh;
     border-left: 1px solid var(--border);
     font-size: var(--text-size);
+}
+
+
+/* poster */
+.poster {
+    width: calc(100% - 2px);
+    aspect-ratio: 3/1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 1vh 0 1vh 0;
+    padding: 1vh 1v 1vh 1vh;
+    background: var(--bg-grad);
+    box-shadow: var(--drop-shadow);
+    transition: all var(--transition);
+}
+
+.poster:hover {
+    box-shadow: var(--shadow-hover);
+    transition: all var(--transition);
+}
+
+.poster-img {
+    height: 90%;
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--drop-shadow);
+    margin: 1.5vw;
+    transition: all var(--transition);
+}
+
+.poster-img:hover {
+    box-shadow: var(--shadow-hover);
+    transition: all var(--transition);
+}
+
+.poster-content {
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.poster-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 30%;
+}
+
+.poster-bottom {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60%;
+}
+
+.poster-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    width: 70%;
+    height: 100%;
+    border-bottom: 1px solid var(--border);
+    font-size: var(--text-size-title);
+}
+
+.poster-infos {
+    width: 15%;
+    height: 70%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: end;
+    margin: 0 0 0 8%;
+    border-left: 1px solid var(--border);
+    font-size: var(--text-size);
+}
+.poster-description {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: start;
+    width: 95%;
+    height: 100%;
 }

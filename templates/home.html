@@ -35,7 +35,7 @@
 <div class="home-content-wrapper">
     <div class="home-content">
 
-        {% for project in data %}
+        {% for project in data[0] %}
         <div class="card" onclick="window.open('{{ project.link }}', '_blank')">
             <img class="card-img" src="{{ project.image or '' }}"></imgç>
 
@@ -54,6 +54,30 @@
                 <p>le {{ project.date }}</p>
                 <p>TYPE :  {{ project.type }}</p>
             </div>
+        </div>
+        {% endfor %}
+
+        {% for news in data[1] %}
+        <div class="poster" onclick="window.open('{{ news.link }}', '_blank')">
+
+            <div class="poster-content">
+                <div class="poster-top">
+                    <div class="poster-title">
+                        <p>{{ news.title }}</p>
+                    </div>
+                    <div class="poster-infos">
+                        <p>le {{ news.date }}</p>
+                    </div>
+                </div>
+
+                <div class="poster-bottom">
+                    <div class="poster-description">
+                        <p>{{ news.description }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <img class="poster-img" src="{{ news.image or '' }}"></imgç>
         </div>
         {% endfor %}
 
