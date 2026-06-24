@@ -675,7 +675,7 @@ a {
 
 /* card */
 .card {
-    width: calc(100% - 10px);
+    width: 98%;
     aspect-ratio: 8/1;
     display: flex;
     flex-direction: row;
@@ -779,7 +779,7 @@ a {
 }
 
 .empty-results {
-    width: calc(100% - 10px);
+    width: 98%;
     min-height: 18vh;
     display: flex;
     align-items: center;
@@ -796,7 +796,7 @@ a {
 
 /* poster */
 .poster {
-    width: calc(100% - 10px);
+    width: 98%;
     aspect-ratio: 3/1;
     display: flex;
     flex-direction: row;
