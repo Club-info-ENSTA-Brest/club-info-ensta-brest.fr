@@ -1,0 +1,34 @@
+{% for project in data %}
+<div
+    class="card{% if project.link %} card-clickable{% endif %}"
+    {% if project.link %}onclick="window.open('{{ project.link }}', '_blank')"{% endif %}
+>
+    {% if project.image %}
+    <img class="card-img" src="{{ project.image }}" alt="">
+    {% else %}
+    <div class="card-img card-img-placeholder">
+        <i class="fa-solid fa-code"></i>
+    </div>
+    {% endif %}
+
+    <div class="card-content">
+        <div class="card-title">
+            <p>{{ project.title }}</p>
+        </div>
+
+        <div class="card-description">
+            <p>{{ project.description }}</p>
+        </div>
+    </div>
+
+    <div class="card-infos">
+        <p>Par : {{ project.author }}</p>
+        <p>le {{ project.date }}</p>
+        <p>{% if project.type == "gitlab" %}GitLab ENSTA{% else %}Club Info{% endif %}</p>
+    </div>
+</div>
+{% else %}
+<div class="empty-results">
+    <p>Aucun projet ne correspond à cette recherche.</p>
+</div>
+{% endfor %}
