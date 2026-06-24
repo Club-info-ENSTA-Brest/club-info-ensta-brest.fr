@@ -8,6 +8,20 @@ from bs4 import BeautifulSoup
 from flask import Flask, g, redirect, render_template, request, url_for
 
 DATABASE = "database.db"
+# à remplacer par une vraie DB plus tard
+NEWS = [
+    [
+        {
+            "type": "event",
+            "text": "Atelier : faire sa première WebApp avec Flask en 1h",
+        },
+        {
+            "type": "news",
+            "text": "Une IA de chez OpenAi résout une importante conjecture vielle de 80ans !",
+        },
+        {"type": "event", "text": "Prochain hackathon sur Brest le ..."},
+    ]
+]
 
 
 # handling methods for image data retrieval
@@ -70,10 +84,11 @@ def get_image_data(link):
 
 # handling database operations
 
+
 def create_db():
     if os.path.exists("database.db"):
         try:
-            os.remove(os.path("dababase.db"))
+            os.remove(os.path.abspath("database.db"))
         except Exception:
             print("Failed to remove existing database")
 
@@ -97,6 +112,7 @@ def create_db():
     conn.close()
 
 
+# add a projet to the database
 def insert_project(title, description, author, link, type):
     try:
         conn = sqlite3.connect(DATABASE)
@@ -131,9 +147,11 @@ def insert_project(title, description, author, link, type):
         print(f"Error inserting project: {e}")
 
 
-# only run once to create the database
-create_db()
+# only run once to create the database, or re-run if the DB is fucked up
+# create_db()
 
+
+### FLASK ###
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.urandom(24).hex()
@@ -157,11 +175,9 @@ def render(template, data=None):
     return render_template(template, data=data, htmx=request.headers.get("HX-Request"))
 
 
-# @app.route("/")
-# def home():
-#    db = get_db()
-#    projects = db.execute("SELECT * FROM projects ORDER BY id DESC").fetchall()
-#    return render("home.html", data=projects)
+@app.route("/")
+def home():
+    return render("home.html", data=NEWS)
 
 
 @app.route("/tutos")
@@ -170,7 +186,7 @@ def tutos():
 
 
 @app.route("/reseaux")
-def resea():
+def reseaux():
     return render("reseaux.html")
 
 
@@ -180,10 +196,6 @@ def projets_enstasiens():
 
 
 # handle requests
-@app.route("/")
-def home():
-    return render("home.html")
-
 @app.route("/feed", methods=["GET", "POST"])
 def feed():
     if request.method == "POST":

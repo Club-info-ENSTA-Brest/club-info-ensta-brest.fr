@@ -76,7 +76,7 @@ function setActiveFromUrl() {
   items.forEach((item) => {
     const page = item.dataset.page;
 
-    if ((path === "/" && page === "home") || path.includes(page)) {
+    if ((path === "/" && page === "") || path.includes(page)) {
       active = item;
     }
   });

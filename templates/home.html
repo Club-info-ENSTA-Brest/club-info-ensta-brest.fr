@@ -1,35 +1,25 @@
-{% if not htmx %}
-{% extends "base.html" %}
-{% block title %}Home{% endblock %}
-{% endif %}
-
-
-{% block content %}
-<div class="header">
-    <p class="header-title">Une idée ? Un projet à partager ?</p>
-    <div class="header-input">
-        <form class="header-input-form" method="POST" action="{{ url_for('home') }}">
-            <div class="header-input-top">
-                <input class="header-title-input" name="title" type="text" placeholder="Titre"></input>
-                <input class="header-description-input" name="description" type="text" placeholder="Décris ton Idée / Projet"></input>
-                <div class="form-row-top">
-                    <select class="select-input" name="type-input" required>
-                        <option value="" disabled selected>Type</option>
-                        <option value="partage">Partager un projet</option>
-                        <option value="idee">Idée</option>
-                        <option value="aide">Demander de l'aide</option>
-                        <option value="autre">Autre</option>
-                    </select>
+{% if not htmx %} {% extends "base.html" %} {% block title %}Home{% endblock %}
+{% endif %} {% block content %}
+<div class="home-news-header">
+    <div class="sliding-infos-wrapper" aria-label="Actualites du Club Info">
+        <div class="sliding-infos-track">
+            <div class="sliding-infos-group">
+                {% for news in data[0] %}
+                <div class="sliding-info">
+                    <span class="sliding-info-type">{{ news.type }}</span>
+                    <p>{{ news.text }}</p>
                 </div>
+                {% endfor %}
             </div>
-            <div class="header-input-bottom">
-                <input class="header-author-input" name="author" type="text" placeholder="Nom"></input>
-                <input class="header-link-input" name="link" type="url" placeholder="Lien du projet / lien image"></input>
-                <div class="form-row-bottom">
-                    <button class="button-input" type="submit">Publier le projet</button>
+            <div class="sliding-infos-group" aria-hidden="true">
+                {% for news in data[0] %}
+                <div class="sliding-info">
+                    <span class="sliding-info-type">{{ news.type }}</span>
+                    <p>{{ news.text }}</p>
                 </div>
+                {% endfor %}
             </div>
-        </form>
+        </div>
     </div>
 </div>
 <div class="home-content-hero">

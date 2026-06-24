@@ -1,6 +1,6 @@
 {% if not htmx %}
 {% extends "base.html" %}
-{% block title %}Home{% endblock %}
+{% block title %}Feed{% endblock %}
 {% endif %}
 
 
@@ -8,7 +8,7 @@
 <div class="header">
     <p class="header-title">Une idée ? Un projet à partager ?</p>
     <div class="header-input">
-        <form class="header-input-form" method="POST" action="{{ url_for('home') }}">
+        <form class="header-input-form" method="POST" action="{{ url_for('feed') }}">
             <div class="header-input-top">
                 <input class="header-title-input" name="title" type="text" placeholder="Titre"></input>
                 <input class="header-description-input" name="description" type="text" placeholder="Décris ton Idée / Projet"></input>
