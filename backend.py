@@ -69,6 +69,7 @@ def get_image_data(link):
 
 
 # handling database operations
+
 def create_db():
     if os.path.exists("database.db"):
         try:
@@ -179,8 +180,12 @@ def projets_enstasiens():
 
 
 # handle requests
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
 def home():
+    return render("home.html")
+
+@app.route("/feed", methods=["GET", "POST"])
+def feed():
     if request.method == "POST":
         title = request.form.get("title")
         description = request.form.get("description")
@@ -191,12 +196,12 @@ def home():
         # Assuming you handle image upload separately
         insert_project(title, description, author, link, type_input)
 
-        return redirect(url_for("home"))
+        return redirect(url_for("feed"))
 
     db = get_db()
     projects = db.execute("SELECT * FROM projects ORDER BY id DESC").fetchall()
     return render(
-        "home.html",
+        "feed.html",
         data=[
             projects,
             [{"title": "Titre", "description": "Description", "date": "01/01/2026"}],

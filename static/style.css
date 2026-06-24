@@ -8,6 +8,7 @@
     --fg: #1f1f1fcc;
 
     --font-color: #e6e9ef;
+    --font-color-transparent: #e6e9ef20;
     --font-color-se: #aab1c3;
     --font-color-ac: #e6e3ff;
 
@@ -482,6 +483,56 @@ a {
     justify-content: start;
     overflow-y: hidden;
 }
+
+.home-content-hero {
+    width: 96%;
+    height: 60%;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.title-hero-top {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    padding: 0;
+    margin: 0;
+    font-size: calc(5*var(--text-size-title));
+    -webkit-text-stroke: 4px var(--font-color-se);
+    color: var(--font-color-transparent);
+    font-weight: bold;
+    filter: saturate(1) brightness(1.1) contrast(1.3);
+    transition: all 0.4s ease-in-out;
+}
+.title-hero-top:hover {
+    transform: scale(1.1);
+    transition: all 0.4s ease-in-out;
+}
+.title-hero-bottom {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    padding: 0;
+    margin: 0;
+    font-size: var(--text-size-title);
+    font-weight: bold;
+    color: var(--font-color-se);
+    transition: all 0.4s ease-in-out;
+}
+.title-hero-bottom:hover {
+    transform: scale(1.1);
+    transition: all 0.4s ease-in-out;
+}
+
+
 
 /* card */
 .card {
