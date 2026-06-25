@@ -1062,11 +1062,20 @@ a {
 }
 
 .article-section p,
+.article-section i,
 .article-section li,
 .article-table {
     color: var(--font-color-se);
     font-size: var(--text-size);
     line-height: 1.65;
+}
+.article-section p.tab {
+    padding-left: 2vw;
+}
+.article-section span.gap {
+    width: 0;
+    height: 0;
+    margin: 5vw;
 }
 
 .article-section code,

@@ -1,4 +1,4 @@
-{% for project in data %}
+{% for project in data[:20] %}
 <div
     class="card{% if project.link %} card-clickable{% endif %}"
     {% if project.link %}onclick="window.open('{{ project.link }}', '_blank')"{% endif %}

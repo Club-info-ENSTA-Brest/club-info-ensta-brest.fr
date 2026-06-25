@@ -29,21 +29,26 @@
         <section class="article-section" id="sommaire">
             <h2>Sommaire</h2>
             <ol class="article-list">
-                <li>Comprendre l'architecture générale</li>
-                <li>Préparer le projet Flask</li>
-                <li>Créer une base SQLite pour stocker les tâches</li>
-                <li>Afficher les tâches dans des cards HTML</li>
-                <li>Ajouter une tâche avec un formulaire et HTMX</li>
-                <li>Chercher, trier et supprimer des tâches</li>
-                <li>Comment utiliser l'IA proprement pour continuer le projet</li>
+                <li><a href="#idee">L'idée du projet</a></li>
+                <li><a href="#ia">Avant-propos : piloter le projet, pas seulement générer du code</a></li>
+                <li><a href="#setup">Installer les dépendances</a></li>
+                <li><a href="#structure">Préparer la structure du projet Flask</a></li>
+                <li><a href="#flask">Comprendre les routes Flask</a></li>
+                <li><a href="#html-css">Construire l'interface en HTML/CSS</a></li>
+                <li><a href="#database">Stocker les tâches avec SQLite</a></li>
+                <li><a href="#jinja">Réutiliser du HTML avec les fragments Jinja</a></li>
+                <li><a href="#htmx">Connecter le front au backend avec HTMX</a></li>
+                <li><a href="#features">Ajouter, chercher, trier et supprimer</a></li>
+                <li><a href="#suite">Aller plus loin</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
             </ol>
         </section>
 
         <section class="article-section" id="idee">
-            <h2>1. L'idée du projet</h2>
+            <h2>L'idée du projet</h2>
             <p>
                 On veut créer une TodoList. C'est volontairement simple : une tâche a un titre, une description,
-                une date limite, une importance et un état. Pourtant, ce petit projet contient déjà presque tous
+                une date limite et un niveau d'importance. Pourtant, ce petit projet contient déjà presque tous
                 les concepts d'une vraie WebApp.
             </p>
 
@@ -54,32 +59,38 @@
                 <span>→</span>
                 <span>HTMX</span>
                 <span>→</span>
-                <span>Flask</span>
+                <span>Flask → SQLite → Flask</span>
                 <span>→</span>
-                <span>SQLite</span>
+                <span>HTML/CSS</span>
             </div>
 
             <p>
-                L'utilisateur clique, écrit ou cherche quelque chose dans l'interface. HTMX transforme cette action
-                en requête HTTP. Flask reçoit la requête, appelle une fonction Python, lit ou modifie SQLite, puis
-                renvoie du HTML à remettre dans la page.
+                L'utilisateur clique, écrit ou cherche quelque chose dans l'interface
+                <b>[Utilisateur → HTML]</b>. HTMX transforme cette action en requête vers Flask
+                <b>[HTML → HTMX → Flask]</b>. Le backend Flask reçoit la requête, l'interprète,
+                puis appelle une fonction Python qui lit ou modifie SQLite
+                <b>[Flask → SQLite → Flask]</b>. Enfin, Flask renvoie du HTML à afficher dans la page
+                <b>[Flask → HTML]</b>.
             </p>
         </section>
 
         <section class="article-section" id="ia">
-            <h2>2. Le vrai objectif : piloter le projet, pas juste copier un tuto</h2>
+            <h2>Avant-propos — Le vrai objectif : piloter le projet, pas juste copier ou générer du code</h2>
             <p>
                 Aujourd'hui, l'IA peut écrire beaucoup de code. Mais si on lui demande simplement
-                <em>"fais-moi une WebApp"</em>, elle risque de produire un bloc opaque, difficile à modifier et
-                pas forcément aligné avec ce qu'on voulait vraiment.
+                <em>« fais-moi une WebApp »</em>, elle risque de produire un bloc opaque : ça semble fonctionner
+                à première vue, mais c'est difficile à modifier et pas forcément aligné avec ce qu'on voulait vraiment.
             </p>
 
             <div class="article-callout warning">
                 <p class="callout-title">Idée importante</p>
                 <p>
-                    L'IA est le junior dev le plus rapide du monde, pas l'architecte de votre projet.
-                    Votre rôle est de définir les données, les pages, les composants, les routes et les interactions.
-                    Ensuite, l'IA peut accélérer l'implémentation.
+                    L'IA est le junior dev le plus rapide et le plus talentueux du monde ; mais elle n'est pas
+                    l'architecte de votre projet.
+                </p>
+                <p>
+                    Votre rôle est de définir le fonctionnement, les données, les pages, les composants,
+                    les routes et les interactions. Ensuite, l'IA peut accélérer l'implémentation.
                 </p>
             </div>
 
@@ -97,9 +108,64 @@ Ajoute une route DELETE /tasks/&lt;id&gt; qui supprime la tâche puis renvoie un
         </section>
 
         <section class="article-section" id="setup">
-            <h2>3. Préparer le projet</h2>
-            <p>Structure minimale :</p>
+            <h2>1. Installer les dépendances</h2>
 
+            <p>Il faut d'abord installer ce que l'on va utiliser.</p>
+            <p>Python :</p>
+            <pre class="code-block"><code>https://www.python.org/downloads/</code></pre>
+
+            <p class="tab">
+                → Pour les GOATS sur Linux ou macOS, je vous laisse installer ça avec votre package manager.
+                Si vous êtes sur Mac et que vous ne savez pas ce que c'est, renseignez-vous sur
+                <i>Homebrew</i>.
+            </p>
+
+            <p>
+                Ensuite, il faut installer les librairies Python. Pour faire ça proprement, la meilleure méthode
+                est de créer un <i>virtual environment</i> : un environnement isolé pour les dépendances du projet.
+            </p>
+
+            <p>Ouvrez un terminal ou une invite de commande (CMD ou PowerShell sur Windows), puis créez votre environnement virtuel :</p>
+            <pre class="code-block"><code>cd [chemin sur le disque vers votre projet]
+python -m venv .venv</code></pre>
+
+            <p>Pour l'activer, il faut ensuite exécuter la commande adaptée à votre système depuis le répertoire du projet :</p>
+            <pre class="code-block"><code>.venv\Scripts\activate      # Windows
+source .venv/bin/activate   # Linux et macOS</code></pre>
+
+            <p>
+                Une fois cela fait, on peut installer les librairies. La liste des librairies est écrite dans un fichier
+                <em>requirements.txt</em>. Pour les installer, exécutez :
+            </p>
+            <pre class="code-block"><code>pip install -r requirements.txt</code></pre>
+        </section>
+
+        <section class="article-section" id="structure">
+            <h2>2. Structure des fichiers pour Flask</h2>
+            <p>Flask respecte une architecture de projet assez simple.</p>
+            <p>
+                Tout projet Flask possède un <em><b>backend</b></em> : un fichier Python qui reçoit les requêtes
+                du navigateur et décide quoi renvoyer. Ici, ce fichier s'appelle <em>backend.py</em>.
+            </p>
+            <p>Les pages <b>HTML</b> du site sont rangées dans un dossier <em><b>templates</b></em>.</p>
+            <p>
+                Les scripts, les feuilles de style <b>CSS</b>, les images, les vidéos et les autres fichiers publics
+                sont rangés dans le dossier <em><b>static</b></em>.
+            </p>
+
+            <p class="tab">Une structure minimale de projet pourrait ressembler à :</p>
+
+            <pre class="code-block"><code>projet-webapp-flask/
+├── backend.py
+├── requirements.txt
+├── static/
+│   ├── style.css
+│   └── script.js
+└── templates/
+    └── home.html</code></pre>
+
+            <span class="gap"></span>
+            <p class="tab">Dans notre cas, on aura plutôt quelque chose qui ressemble à ça :</p>
             <pre class="code-block"><code>atelier-todolist/
 ├── backend.py
 ├── database.db              # généré automatiquement
@@ -111,50 +177,13 @@ Ajoute une route DELETE /tasks/&lt;id&gt; qui supprime la tâche puis renvoie un
     ├── home.html
     ├── _task.html
     └── _tasks.html</code></pre>
-
-            <p>Installation :</p>
-            <pre class="code-block"><code>python -m venv .venv
-source .venv/bin/activate
-pip install flask</code></pre>
-
-            <p>Lancement :</p>
-            <pre class="code-block"><code>flask --app backend run --debug</code></pre>
-        </section>
-
-        <section class="article-section" id="database">
-            <h2>4. La base de données</h2>
-            <p>
-                Pour ne pas passer tout l'atelier sur SQLite, on peut fournir une petite librairie Python déjà prête.
-                L'objectif est de comprendre <strong>quand</strong> on utilise la base, pas forcément d'écrire tout le
-                boilerplate à la main dès le début.
-            </p>
-
-            <pre class="code-block"><code>CREATE TABLE IF NOT EXISTS tasks (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    description TEXT DEFAULT '',
-    due_date TEXT DEFAULT '',
-    importance TEXT DEFAULT 'normal',
-    done INTEGER DEFAULT 0,
-    created_at TEXT NOT NULL
-)</code></pre>
-
-            <p>Les fonctions utiles peuvent être exposées comme ça :</p>
-            <pre class="code-block"><code>from todolist_kit import init_db, get_tasks, create_task, delete_task, search_tasks</code></pre>
-
-            <div class="article-callout tldr">
-                <p class="callout-title">À retenir</p>
-                <p>
-                    Une base de données sert à garder les informations même après un refresh ou un redémarrage.
-                    Ici, toutes les cards affichées viennent de SQLite.
-                </p>
-            </div>
         </section>
 
         <section class="article-section" id="flask">
-            <h2>5. Les routes Flask</h2>
+            <h2>3. Les routes Flask</h2>
             <p>
-                Flask reçoit les requêtes du navigateur. Chaque route correspond à une action de l'application.
+                Flask reçoit les requêtes du navigateur. Chaque <em>route</em> correspond à une URL et à une action
+                de l'application.
             </p>
 
             <table class="article-table">
@@ -188,26 +217,49 @@ pip install flask</code></pre>
                 </tbody>
             </table>
 
+            <p>Une route Flask de base qui permet de retourner la page <em>home.html</em> s'écrit :</p>
+            <pre class="code-block"><code>@app.route("/")
+def home():
+    return render_template("home.html")</code></pre>
+
+            <p>
+                Le grand avantage de Flask est qu'il permet aussi de passer des informations à la page Web.
+                Pour cela, on peut ajouter des données lorsqu'on retourne la page. Par exemple, si une fonction
+                <em>get_tasks()</em> récupère les tâches sous forme de liste de dictionnaires, on peut faire :
+            </p>
             <pre class="code-block"><code>@app.route("/")
 def home():
     tasks = get_tasks()
     return render_template("home.html", tasks=tasks)</code></pre>
+            <p>On pourra ensuite accéder à la variable <em>tasks</em> directement dans notre code HTML.</p>
         </section>
 
         <section class="article-section" id="html-css">
-            <h2>6. Penser l'interface en blocs</h2>
+            <h2>4. Construire et concevoir une interface en HTML et CSS</h2>
             <p>
-                Avant de coder, on dessine l'interface. On décide où mettre le menu, la barre de recherche,
-                la liste des tâches et le formulaire d'ajout. Ensuite, on assemble des classes CSS déjà écrites.
+                Avant de coder, on dessine l'interface. On décide où placer le menu, la barre de recherche,
+                la liste des tâches et le formulaire d'ajout. Ensuite, on imagine comment ranger ces éléments
+                dans une interface construite à partir de blocs avec des tailles et des règles de positionnement
+                : en haut, en bas, à gauche, en bas à droite, etc. Ces blocs sont des <em>div</em>, et les règles
+                de positionnement sont souvent définies avec <em>flex</em>.
+            </p>
+
+            <p>
+                Pour simplifier l'écriture de votre WebApp, vous pouvez vous inspirer du code d'exemple et utiliser
+                des <em>classes</em> qui correspondent à des règles CSS déjà écrites.
             </p>
 
             <div class="article-callout info">
                 <p class="callout-title">Méthode</p>
                 <p>
-                    Ne commencez pas par écrire du CSS. Commencez par placer les blocs : lignes, colonnes,
-                    panneaux, boutons, inputs. Une fois la structure claire, le style devient beaucoup plus simple.
+                    Pour créer réellement un projet à partir de zéro, ne commencez pas par écrire tout le CSS.
+                    Commencez par placer les blocs, d'abord sur papier, puis écrivez seulement le CSS nécessaire
+                    pour définir les lignes, colonnes, panneaux, boutons et inputs. Une fois la structure claire,
+                    rendre la page jolie devient beaucoup plus simple.
                 </p>
             </div>
+
+            <p>Ici, vous avez à disposition des styles déjà écrits. Voici quelques classes utiles :</p>
 
             <table class="article-table">
                 <thead>
@@ -220,21 +272,72 @@ def home():
                     <tr><td><code>.container-row</code></td><td>Place les enfants horizontalement.</td></tr>
                     <tr><td><code>.container-column</code></td><td>Place les enfants verticalement.</td></tr>
                     <tr><td><code>.center</code></td><td>Centre horizontalement et verticalement.</td></tr>
-                    <tr><td><code>.w-80</code>, <code>.h-100</code></td><td>Contrôle largeur et hauteur.</td></tr>
+                    <tr><td><code>.w-80</code>, <code>.h-100</code></td><td>Contrôle la largeur et la hauteur.</td></tr>
                     <tr><td><code>.pannel</code></td><td>Crée un panneau stylé.</td></tr>
                     <tr><td><code>.btn</code></td><td>Crée un bouton cohérent avec le thème.</td></tr>
                     <tr><td><code>.input</code></td><td>Style les champs du formulaire.</td></tr>
-                    <tr><td><code>.task</code></td><td>Card représentant une tâche.</td></tr>
-                    <tr><td><code>.overlay</code>, <code>.modal</code></td><td>Popup au-dessus de la page.</td></tr>
+                    <tr><td><code>.task</code></td><td>Représente une tâche sous forme de card.</td></tr>
+                    <tr><td><code>.overlay</code>, <code>.modal</code></td><td>Affiche une popup au-dessus de la page.</td></tr>
                 </tbody>
             </table>
+
+            <p>Pour donner une classe à une <em>div</em>, on écrit par exemple :</p>
+            <pre class="code-block"><code>&lt;div class="container-column center w-20 h-100"&gt;
+    ...
+&lt;/div&gt;</code></pre>
+
+            <p>Pour mieux comprendre la structure, je vous conseille de regarder comment l'exemple est écrit.</p>
+            <p>Après avoir organisé ces blocs, on peut ajouter du texte, des images, des liens, des boutons, etc.</p>
+
+            <p>
+                Après avoir conçu et implémenté la page en HTML et CSS, il faut pouvoir utiliser les données passées
+                avec <code>return render_template("home.html", tasks=tasks)</code>.
+            </p>
+            <p>Pour cela, on écrit des expressions Jinja directement dans le HTML :</p>
+            <pre class="code-block"><code>&lt;p class="big-text"&gt;{{ '{{ tasks[0].title }}' }}&lt;/p&gt;</code></pre>
+
+            <p>On peut faire quelque chose d'encore plus puissant : des boucles.</p>
+            <pre class="code-block"><code>{% raw %}{% for task in tasks %}
+    &lt;p class="big-text"&gt;{{ task.title }}&lt;/p&gt;
+{% endfor %}{% endraw %}</code></pre>
+        </section>
+
+        <section class="article-section" id="database">
+            <h2>5. La base de données</h2>
+            <p>
+                Pour ne pas passer tout l'atelier sur SQLite, on peut fournir une petite librairie Python déjà prête.
+                L'objectif est de comprendre <strong>quand</strong> on utilise la base, pas forcément d'écrire tout le
+                boilerplate à la main dès le début.
+            </p>
+            <p>La base de données utilisée ici a la forme suivante :</p>
+
+            <pre class="code-block"><code>CREATE TABLE IF NOT EXISTS tasks (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT DEFAULT '',
+    due_date TEXT DEFAULT '',
+    importance TEXT DEFAULT 'normal',
+    done INTEGER DEFAULT 0,
+    created_at TEXT NOT NULL
+)</code></pre>
+
+            <p>Les fonctions utiles peuvent être exposées comme ça :</p>
+            <pre class="code-block"><code>from todolist_kit import init_db, get_tasks, create_task, delete_task, search_tasks</code></pre>
+
+            <div class="article-callout tldr">
+                <p class="callout-title">À retenir</p>
+                <p>
+                    Une base de données sert à garder les informations même après un refresh ou un redémarrage.
+                    Ici, toutes les cards affichées viennent de SQLite.
+                </p>
+            </div>
         </section>
 
         <section class="article-section" id="jinja">
-            <h2>7. Les fragments Jinja</h2>
+            <h2>6. Les fragments Jinja</h2>
             <p>
-                Au lieu de répéter le HTML d'une task partout, on crée un composant réutilisable :
-                <code>_task.html</code>.
+                Au lieu de répéter le HTML d'une tâche partout et de se retrouver avec du code spaghetti très long,
+                on peut créer un fragment de code HTML dans un fichier séparé : <code>_task.html</code>.
             </p>
 
             <pre class="code-block"><code>&lt;div class="task" id="task-{{ '{{ task.id }}' }}"&gt;
@@ -250,21 +353,30 @@ def home():
 &lt;/div&gt;</code></pre>
 
             <p>
-                Puis on peut afficher toute la liste avec <code>_tasks.html</code> :
+                Puis on peut afficher toute la liste avec <code>_tasks.html</code>, qui utilise le composant
+                <code>_task.html</code> :
             </p>
 
             <pre class="code-block"><code>{% raw %}{% for task in tasks %}
     {% include "_task.html" %}
 {% else %}
-    &lt;p&gt;Aucune task.&lt;/p&gt;
+    &lt;p&gt;Aucune tâche.&lt;/p&gt;
 {% endfor %}{% endraw %}</code></pre>
         </section>
 
         <section class="article-section" id="htmx">
-            <h2>8. HTMX : connecter le front au backend</h2>
+            <h2>7. HTMX : connecter le front au backend sans tout recharger à chaque fois</h2>
+            <p>
+                À ce stade, on a quelque chose qui fonctionne presque. Le problème, c'est que pour mettre à jour
+                les données, on est obligé de rafraîchir toute la page.
+            </p>
             <p>
                 HTMX permet d'envoyer une requête HTTP depuis un élément HTML et de placer la réponse directement
-                dans la page. Pas besoin d'écrire du JavaScript complexe pour commencer.
+                dans la page, sans passer par du JavaScript complexe.
+            </p>
+            <p>
+                Pour envoyer un ensemble de données, par exemple pour ajouter une tâche, on se sert d'un
+                <em>form</em> : une sorte de réponse à un questionnaire — d'où le nom de <em>Google Forms</em>, par exemple.
             </p>
 
             <pre class="code-block"><code>&lt;form
@@ -282,6 +394,11 @@ def home():
                 <li><code>hx-swap="afterbegin"</code> : la nouvelle card est ajoutée au début.</li>
             </ul>
 
+            <p>
+                Chaque élément d'un <code>form</code> peut être de nature différente : <code>input</code>,
+                <code>select</code>, <code>textarea</code>, etc.
+            </p>
+
             <pre class="code-block"><code>&lt;input
     name="q"
     hx-get="/search"
@@ -297,7 +414,7 @@ def home():
         </section>
 
         <section class="article-section" id="features">
-            <h2>9. Ajouter, chercher, trier, supprimer</h2>
+            <h2>8. Ajouter, chercher, trier, supprimer</h2>
             <p>
                 Les fonctionnalités importantes suivent toutes le même modèle :
             </p>
@@ -314,7 +431,7 @@ def home():
 
             <p>Exemple : supprimer une tâche.</p>
             <pre class="code-block"><code>@app.route("/tasks/&lt;int:task_id&gt;", methods=["DELETE"])
-def delete_task(task_id):
+def delete_task_route(task_id):
     delete_task_from_db(task_id)
     return "", 200</code></pre>
 
@@ -328,14 +445,24 @@ def delete_task(task_id):
             <div class="article-callout tldr">
                 <p class="callout-title">À retenir</p>
                 <p>
-                    Une feature WebApp, c'est souvent : un bouton ou formulaire, une route Flask,
+                    Une feature WebApp, c'est souvent : un bouton ou un formulaire, une route Flask,
                     une fonction qui modifie les données, puis un fragment HTML renvoyé.
+                </p>
+            </div>
+
+            <span class="gap"></span>
+            <div class="article-callout">
+                <p class="callout-title">Utilisation de l'IA</p>
+                <p>
+                    Après avoir correctement défini sa base de données et écrit au moins une méthode proprement,
+                    l'ajout d'autres types d'actions peut se faire sans trop de risques en demandant à une IA
+                    de rajouter la feature souhaitée en s'inspirant du code déjà écrit.
                 </p>
             </div>
         </section>
 
         <section class="article-section" id="suite">
-            <h2>10. Et après ?</h2>
+            <h2>9. Et après ? Aller plus loin</h2>
             <p>
                 Cette app est volontairement locale et pédagogique. Elle ne gère pas les comptes utilisateurs,
                 les mots de passe ou les permissions. C'est une bonne chose pour commencer : on apprend les bases
@@ -352,11 +479,9 @@ def delete_task(task_id):
 
             <p>Idées d'améliorations raisonnables :</p>
             <ul class="article-list">
-                <li>Ajouter un bouton pour marquer une tâche comme terminée.</li>
+                <li>Ajouter un bouton pour marquer une tâche comme terminée, au lieu de simplement la supprimer.</li>
                 <li>Ajouter des filtres : urgent, aujourd'hui, terminé.</li>
                 <li>Ajouter un thème clair/sombre.</li>
-                <li>Créer une page de documentation des classes CSS.</li>
-                <li>Demander à une IA d'ajouter une feature précise dans cette architecture.</li>
             </ul>
         </section>
 
@@ -373,7 +498,9 @@ def delete_task(task_id):
                 <p class="callout-title">Phrase à garder</p>
                 <p>
                     Ne demandez pas à l'IA de créer votre projet à votre place. Construisez l'architecture,
-                    puis utilisez l'IA pour accélérer l'implémentation de briques précises.
+                    puis utilisez l'IA pour accélérer l'implémentation de briques précises. Plus on donne à l'IA
+                    des ordres précis avec des exemples, moins on lui laisse la liberté de faire quelque chose
+                    que l'on ne souhaite pas.
                 </p>
             </div>
         </section>
