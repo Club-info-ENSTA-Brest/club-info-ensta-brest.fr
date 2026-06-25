@@ -5,7 +5,31 @@
 </div>
 <div class="home-content-wrapper">
     <div class="home-content">
-        <div class="card"></div>
+        <div class="vbox-wrapper">
+            <div
+                class="vbox vbox-clickable"
+                id="tuto-webapp-flask"
+                hx-get="/tutos/tuto-webapp-flask"
+                hx-push-url="true"
+                hx-target="#content"
+            >
+                <div class="vbox-title">
+                    <p>Faire sa première WebApp avec Flask</p>
+                </div>
+                <div class="vbox-description">
+                    <p>Ce tuto reprend l'atelier "WebApp TodoList en 1h" et vous apprend à construire une WebApp from scratch grâce à Flask (Python) + HTML/CSS + HTMX + SQLITE</p>
+                </div>
+                <img class="vbox-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNVXQZnBnTJg2peVBKHacjXNGOG_UbuQKqp9KE4uSSMg&s=10"></img>
+            </div>
+            <div class="vbox"></div>
+            <div class="vbox"></div>
+        </div>
+        <div class="vbox-wrapper">
+            <div class="vbox"></div>
+            <div class="vbox"></div>
+            <div class="vbox"></div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

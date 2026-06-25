@@ -890,3 +890,287 @@ a {
     width: 95%;
     height: 100%;
 }
+
+/* vbox */
+.vbox-wrapper {
+    width: 98%;
+    aspect-ratio: 15/6;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+.vbox {
+    width: 30%;
+    aspect-ratio: 6/7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 0vh 1vw 0vh 1vw;
+    padding: 1vh 0 1vh 0;
+    background: var(--bg-grad);
+    box-shadow: var(--drop-shadow);
+    transition: all var(--transition);
+    overflow-y: none;
+}
+
+.vbox:hover {
+    box-shadow: var(--shadow-hover);
+    transform: scale(1.01) translateY(-5px);
+    transition: all var(--transition);
+}
+
+.vbox-clickable {
+    cursor: pointer;
+}
+
+.vbox-img {
+    width: 80%;
+    height: 70%;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--drop-shadow);
+    transition: all var(--transition);
+    transition-delay: 0.05s;
+    margin: 5%;
+}
+.vbox:hover .vbox-img {
+    height: 30%;
+    transition: all var(--transition-slow);
+}
+
+.vbox-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    height: 20%;
+    font-size: var(--text-size-title);
+    font-weight: bold;
+    text-align: center;
+    transition: all var(--transition-slow);
+    border-bottom: None;
+}
+.vbox:hover .vbox-title {
+    transition: all var(--transition);
+    padding-bottom: 2%;
+    border-bottom: 1px solid var(--border);
+    transform: scale(1.005) translateY(-2px);
+}
+
+.vbox-description {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: center;
+    width: 90%;
+    height: 0%;
+    transition: all var(--transition-slow);
+}
+.vbox-description p {
+    padding-top: 0%;
+    opacity: 0;
+    text-align: center;
+    transition: all var(--transition-slow);
+}
+.vbox:hover .vbox-description {
+    height: 35%;
+    transition: all var(--transition-slow);
+}
+.vbox:hover .vbox-description p {
+    padding-top: 5%;
+    opacity: 1;
+    transition: all var(--transition);
+}
+
+
+/* tutos articles */
+.section-title {
+    width: 98%;
+    font-size: var(--text-size-title);
+    font-weight: bold;
+    text-align: start;
+}
+.section {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    padding: 0 1vw 0 1vw;
+}
+
+.article-content {
+    width: 95%;
+    align-items: center;
+    gap: 2vh;
+    padding-bottom: 6vh;
+}
+
+.article-hero,
+.article-section,
+.article-callout {
+    width: 98%;
+    box-sizing: border-box;
+}
+
+.article-hero {
+    margin-top: 2vh;
+    padding: 3vh 2vw;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-grad);
+    box-shadow: var(--drop-shadow);
+}
+
+.article-kicker {
+    margin: 0 0 1vh 0;
+    color: var(--font-color-ac);
+    font-size: var(--text-size);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.article-hero h1 {
+    margin: 0;
+    color: var(--font-color);
+    font-size: calc(1.4 * var(--text-size-title));
+}
+
+.article-lead {
+    color: var(--font-color-se);
+    font-size: calc(1.15 * var(--text-size));
+    line-height: 1.6;
+}
+
+.article-section {
+    padding: 2vh 2vw;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.035);
+    box-shadow: var(--drop-shadow);
+}
+
+.article-section h2 {
+    margin: 0 0 1.4vh 0;
+    color: var(--font-color-ac);
+    font-size: var(--text-size-title);
+}
+
+.article-section p,
+.article-section li,
+.article-table {
+    color: var(--font-color-se);
+    font-size: var(--text-size);
+    line-height: 1.65;
+}
+
+.article-section code,
+.article-table code {
+    color: var(--font-color-ac);
+}
+
+.article-list {
+    margin: 1vh 0;
+    padding-left: 2vw;
+}
+
+.article-callout {
+    padding: 1.4vh 1.4vw;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: var(--drop-shadow);
+}
+
+.article-callout .callout-title {
+    margin: 0 0 0.6vh 0;
+    color: var(--font-color-ac);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.article-callout p {
+    margin: 0;
+    color: var(--font-color-se);
+    line-height: 1.55;
+}
+
+.article-callout.warning {
+    border-color: rgba(255, 190, 120, 0.35);
+    background: rgba(255, 190, 120, 0.06);
+}
+
+.article-callout.info {
+    border-color: rgba(125, 211, 252, 0.28);
+}
+
+.article-callout.tldr {
+    border-color: rgba(167, 139, 250, 0.3);
+}
+
+.code-block {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1.4vh 1.2vw;
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: rgba(0, 0, 0, 0.32);
+    color: var(--font-color);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.code-block code {
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    font-size: calc(0.85 * var(--text-size));
+    line-height: 1.55;
+    white-space: pre;
+}
+
+.article-diagram {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6vw;
+    align-items: center;
+    justify-content: center;
+    margin: 2vh 0;
+}
+
+.article-diagram span {
+    padding: 0.7vh 0.8vw;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--font-color);
+    box-shadow: var(--drop-shadow);
+}
+
+.article-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.4vh 0;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+}
+
+.article-table th,
+.article-table td {
+    padding: 1vh 1vw;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.article-table th {
+    color: var(--font-color-ac);
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.article-table td {
+    background: rgba(0, 0, 0, 0.12);
+}

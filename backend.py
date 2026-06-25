@@ -413,6 +413,11 @@ def tutos():
     return render("tutos.html")
 
 
+@app.route("/tutos/tuto-webapp-flask")
+def tuto_webapp_flask():
+    return render("tutos/tuto-webapp-flask.html")
+
+
 @app.route("/reseaux")
 def reseaux():
     return render("reseaux.html")
