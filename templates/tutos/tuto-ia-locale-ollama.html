@@ -1,0 +1,455 @@
+{% if not htmx %} {% extends "base.html" %} {% block title %}Tuto IA locale{% endblock %}
+{% endif %} {% block content %}
+<div class="header">
+    <p class="header-title">Tuto : Faire tourner sa première IA en local</p>
+</div>
+
+<div class="home-content-wrapper">
+    <article class="home-content article-content">
+        <section class="article-hero">
+            <p class="article-kicker">Ollama · LLM · RAM/VRAM · modèles locaux</p>
+            <h1>Installer Ollama et lancer son premier modèle</h1>
+            <p class="article-lead">
+                Dans ce tuto, on installe <em><b>Ollama</b></em> qui est un logiciel permettant de faire tourner des modèles d'IA <em>"Open weights"</em> sur sa propre machine.
+                On lance un premier modèle directement sur son ordinateur,
+                puis on apprend à choisir un modèle adapté à sa machine, et enfin on verra comment utiliser ollama dans ses autres projets avec des requettes API.
+                Le but n'est pas de devenir expert en machine learning, mais de comprendre les briques essentielles pour utiliser l'IA en locale proprement, et donc sans avoir a payer ou compromettre ses données.
+            </p>
+        </section>
+
+        <div class="article-callout tldr">
+            <p class="callout-title">TL;DR</p>
+            <p>
+                Une IA locale, c'est un modèle qui tourne sur ton ordinateur plutôt que sur les serveurs
+                d'OpenAI, Anthropic ou Google. Avec Ollama, on peut installer et lancer des modèles assez
+                simplement. Le vrai sujet n'est pas seulement <em>« quel est le meilleur modèle ? »</em>,
+                mais plutôt <em>« quel est le meilleur modèle tourne correctement sur ma machine ? »</em>.
+            </p>
+        </div>
+
+        <section class="article-section" id="sommaire">
+            <h2>Sommaire</h2>
+            <ol class="article-list">
+                <li><a href="#idee">L'idée du tuto</a></li>
+                <li><a href="#pourquoi">Pourquoi faire tourner une IA en local ?</a></li>
+                <li><a href="#installer">Installer Ollama</a></li>
+                <li><a href="#premier-modele">Lancer son premier modèle</a></li>
+                <li><a href="#machine">Comprendre les limites de sa machine</a></li>
+                <li><a href="#choisir">Choisir un modèle adapté</a></li>
+                <li><a href="#optimiser">Optimiser sans magie</a></li>
+                <li><a href="#api">Ollama comme brique pour d'autres outils</a></li>
+                <li><a href="#suite">Aller plus loin</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+            </ol>
+        </section>
+
+        <section class="article-section" id="idee">
+            <h2>L'idée du tuto</h2>
+            <p>
+                Quand on parle d'IA aujourd'hui, on pense souvent à ChatGPT, Claude, Gemini ou Mistral Chat.
+                Ce sont des services en ligne (et souvent payant si on veut vraiment en profiter) : on écrit un message, il part vers un serveur distant, puis le
+                serveur renvoie une réponse. Ici, on va faire quelque chose d'un peu différent : lancer un
+                modèle directement sur notre ordinateur.
+            </p>
+
+            <div class="article-diagram">
+                <span>Utilisateur</span>
+                <span>→</span>
+                <span>Terminal / interface</span>
+                <span>→</span>
+                <span>Ollama</span>
+                <span>→</span>
+                <span>Modèle local</span>
+                <span>→</span>
+                <span>Réponse</span>
+            </div>
+
+            <p>
+                Ollama joue le rôle de couche simple entre nous et le modèle. Il télécharge les fichiers du
+                modèle, lance le moteur d'exécution, expose une interface en ligne de commande et peut aussi
+                servir de petit serveur local pour d'autres outils.
+            </p>
+
+            <p>
+                On ne va pas entraîner une IA from scratch. On va utiliser des modèles déjà entraînés, puis
+                apprendre à choisir un compromis réaliste entre qualité, vitesse et mémoire disponible.
+            </p>
+        </section>
+
+        <section class="article-section" id="pourquoi">
+            <h2>1. Pourquoi faire tourner une IA en local ?</h2>
+            <p>
+                Faire tourner une IA en local peut sembler un peu gadget au début. Après tout, les modèles
+                cloud sont souvent plus puissants, plus rapides et beaucoup plus simples à utiliser. Mais l'IA
+                locale ne devient non seulement de plus en plus performante, mais elle est aussi intéressante en tant que telle dès qu'on veut expérimenter, comprendre ce qu'on utilise, éviter
+                d'envoyer certaines données en ligne ou intégrer une brique IA dans ses propres projets.
+                Les entreprises qui possèdent des données critiques utilisent déjà ce genre de technologies depuis un moment, en faisait tourner des IAs locales sur un de leurs servers internes.
+            </p>
+
+            <table class="article-table">
+                <thead>
+                    <tr>
+                        <th>IA en ligne</th>
+                        <th>IA locale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Très performante, surtout avec les meilleurs modèles propriétaires.</td>
+                        <td>Dépend fortement de la machine et du modèle choisi.</td>
+                    </tr>
+                    <tr>
+                        <td>Les prompts partent vers un service externe.</td>
+                        <td>Les prompts peuvent rester sur l'ordinateur.</td>
+                    </tr>
+                    <tr>
+                        <td>Simple à utiliser : compte, navigateur, API.</td>
+                        <td>Demande un peu d'installation et de compréhension technique.</td>
+                    </tr>
+                    <tr>
+                        <td>Coût ou quotas selon les services.</td>
+                        <td>Pas de coût par message une fois le modèle téléchargé.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="article-callout warning">
+                <p class="callout-title">Attention</p>
+                <p>
+                    IA locale ne veut pas dire <em>« ChatGPT gratuit en mieux »</em>. Sur un laptop classique,
+                    un modèle local sera souvent moins fort et plus lent qu'un gros modèle cloud. L'intérêt est
+                    ailleurs : prix, contrôle, confidentialité, expérimentation et intégration dans ses propres outils.
+                </p>
+            </div>
+
+            <p>
+                L'objectif du tuto est donc de construire un modèle mental simple : une IA locale, c'est un
+                modèle, un moteur d'exécution et des contraintes matérielles. Si on comprend ces trois briques,
+                on peut faire des choix beaucoup plus intelligents.
+            </p>
+        </section>
+
+        <section class="article-section" id="installer">
+            <h2>2. Installer Ollama</h2>
+            <p>
+                Ollama est l'un des outils les plus simples pour démarrer avec des modèles locaux. Il fonctionne
+                un peu comme un gestionnaire de modèles : on lui demande un modèle, il le télécharge, puis il le
+                lance dans le terminal.
+            </p>
+
+            <p>Sur Linux, l'installation se fait avec :</p>
+            <pre class="code-block"><code>curl -fsSL https://ollama.com/install.sh | sh</code></pre>
+
+            <p>Ensuite, on vérifie que la commande existe :</p>
+            <pre class="code-block"><code>ollama --version</code></pre>
+
+            <p>
+                Sur Windows et macOS, le plus simple est de passer par le site officiel :
+            </p>
+            <pre class="code-block"><code>https://ollama.com/</code></pre>
+
+            <p>
+                Une fois installé, ouvrez un terminal et testez aussi <code>ollama --version</code>. Si la commande
+                n'est pas reconnue, c'est souvent que l'installation n'est pas terminée, que le terminal n'a pas
+                été relancé ou que le programme n'est pas dans le <em>PATH</em>.
+            </p>
+
+            <div class="article-callout info">
+                <p class="callout-title">Méthode</p>
+                <p>
+                    Si une commande ne marche pas, ne copiez-collez pas quinze commandes au hasard. Lisez le
+                    message d'erreur : est-ce que Ollama n'est pas installé ? Est-ce que le service n'est pas
+                    lancé ? Est-ce que le modèle demandé n'existe pas ? La plupart des bugs d'installation se
+                    résolvent en identifiant précisément ce qui manque.
+                </p>
+            </div>
+        </section>
+
+        <section class="article-section" id="premier-modele">
+            <h2>3. Lancer son premier modèle</h2>
+            <p>
+                Une fois Ollama installé, on peut lancer un premier modèle. Pour commencer, il vaut mieux choisir
+                un modèle relativement léger. Le but n'est pas de faire exploser la RAM dès la première commande.
+            </p>
+
+            <pre class="code-block"><code>ollama run llama3.2:3b</code></pre>
+
+            <p>
+                Au premier lancement, Ollama télécharge le modèle. Ensuite, il ouvre une discussion directement
+                dans le terminal. Vous pouvez par exemple lui demander :
+            </p>
+
+            <pre class="code-block"><code>Explique-moi ce qu'est une API comme si j'étais en première année d'école d'ingé.</code></pre>
+
+            <p>
+                Si tout se passe bien, le modèle répond dans le terminal. La réponse ne sera pas forcément aussi
+                bonne que celle d'un gros modèle cloud, mais le plus important ici est de comprendre la chaîne :
+                votre terminal parle à Ollama, Ollama exécute le modèle, puis le modèle génère du texte.
+            </p>
+
+            <div class="article-callout tldr">
+                <p class="callout-title">À retenir</p>
+                <p>
+                    <code>ollama run nom-du-modele</code> télécharge le modèle si nécessaire, puis lance une
+                    conversation avec lui. Pour débuter, choisissez un modèle petit ou moyen, pas directement
+                    un monstre impossible à faire tourner.
+                </p>
+            </div>
+
+            <p>
+                Quelques modèles légers à tester selon leur disponibilité dans Ollama :
+            </p>
+            <pre class="code-block"><code>ollama run llama3.2:3b
+ollama run qwen2.5:3b
+ollama run gemma3:4b</code></pre>
+        </section>
+
+        <section class="article-section" id="machine">
+            <h2>4. Comprendre les limites de sa machine</h2>
+            <p>
+                C'est probablement la partie la plus importante du tuto. Quand un modèle local rame, ce n'est pas
+                juste parce que <em>« le PC est nul »</em>. Il faut comprendre ce qui limite réellement l'exécution.
+            </p>
+
+            <table class="article-table">
+                <thead>
+                    <tr>
+                        <th>Terme</th>
+                        <th>Idée simple</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>CPU</code></td>
+                        <td>Le processeur classique. Il peut faire tourner un modèle, mais souvent lentement.</td>
+                    </tr>
+                    <tr>
+                        <td><code>GPU</code></td>
+                        <td>La carte graphique. Elle peut accélérer fortement les modèles si elle est compatible.</td>
+                    </tr>
+                    <tr>
+                        <td><code>RAM</code></td>
+                        <td>La mémoire principale du PC. Si le modèle ne rentre pas, tout devient pénible.</td>
+                    </tr>
+                    <tr>
+                        <td><code>VRAM</code></td>
+                        <td>La mémoire de la carte graphique. Très importante pour faire tourner vite un modèle.</td>
+                    </tr>
+                    <tr>
+                        <td><code>3B / 7B / 12B</code></td>
+                        <td>Nombre approximatif de paramètres. Plus c'est gros, plus c'est lourd.</td>
+                    </tr>
+                    <tr>
+                        <td><code>Q4 / Q5 / Q8</code></td>
+                        <td>Quantization : une manière de compresser le modèle pour utiliser moins de mémoire.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                La taille d'un modèle est souvent indiquée en milliards de paramètres : 3B, 7B, 12B, 30B, etc.
+                En général, un modèle plus gros peut être plus capable, mais il demande plus de mémoire et peut
+                être beaucoup plus lent.
+            </p>
+
+            <p>
+                La quantization réduit la précision des poids du modèle pour gagner en mémoire. Un modèle en Q4
+                est plus léger qu'un modèle en Q8, mais peut perdre un peu en qualité. En pratique, Q4 ou Q5 sont
+                souvent de bons compromis pour tester sur une machine étudiante.
+            </p>
+
+            <div class="article-callout warning">
+                <p class="callout-title">Idée importante</p>
+                <p>
+                    Ce qui limite souvent un modèle local, ce n'est pas seulement la puissance brute du PC. C'est
+                    surtout : est-ce que le modèle rentre en RAM ou en VRAM, et est-ce qu'il répond assez vite
+                    pour être utilisable ?
+                </p>
+            </div>
+        </section>
+
+        <section class="article-section" id="choisir">
+            <h2>5. Choisir un modèle adapté</h2>
+            <p>
+                Le réflexe naturel est de chercher <em>« le meilleur modèle »</em>. C'est une mauvaise question.
+                La vraie question est : quel modèle correspond à mon usage et à ma machine ?
+            </p>
+
+            <table class="article-table">
+                <thead>
+                    <tr>
+                        <th>Situation</th>
+                        <th>Choix raisonnable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Laptop sans GPU dédié</td>
+                        <td>Modèles 1B à 4B, quantizés, pour garder une vitesse correcte.</td>
+                    </tr>
+                    <tr>
+                        <td>Laptop avec GPU modeste</td>
+                        <td>Modèles 3B à 7B, éventuellement 12B si la VRAM suit.</td>
+                    </tr>
+                    <tr>
+                        <td>Machine solide</td>
+                        <td>7B à 12B confortables, plus gros modèles possibles selon RAM/VRAM.</td>
+                    </tr>
+                    <tr>
+                        <td>Code</td>
+                        <td>Modèle orienté code : Qwen Coder, DeepSeek Coder, CodeLlama, etc.</td>
+                    </tr>
+                    <tr>
+                        <td>Discussion / explication</td>
+                        <td>Modèle généraliste instruct, à tester sur vos propres prompts.</td>
+                    </tr>
+                    <tr>
+                        <td>Agent IA</td>
+                        <td>Modèle fiable et assez rapide. Un agent lent devient vite inutilisable.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="article-callout tldr">
+                <p class="callout-title">Phrase à garder</p>
+                <p>
+                    Le meilleur modèle local n'est pas le plus gros : c'est celui qui tourne assez vite sur votre
+                    machine pour que vous l'utilisiez vraiment.
+                </p>
+            </div>
+
+            <p>
+                Pour choisir, il faut tester. Prenez deux ou trois modèles, posez-leur les mêmes questions, puis
+                comparez la vitesse, la qualité, la capacité à répondre en français, la qualité du code généré et
+                le confort d'utilisation. Les benchmarks en ligne sont utiles, mais votre machine et vos usages
+                comptent davantage.
+            </p>
+        </section>
+
+        <section class="article-section" id="optimiser">
+            <h2>6. Optimiser sans magie</h2>
+            <p>
+                Il existe beaucoup de techniques avancées pour accélérer les modèles locaux, mais avant de partir
+                dans des configurations compliquées, il faut déjà appliquer les optimisations simples.
+            </p>
+
+            <ul class="article-list">
+                <li>Choisir un modèle plus petit.</li>
+                <li>Utiliser une quantization plus légère, par exemple Q4 ou Q5.</li>
+                <li>Fermer les applications lourdes avant de lancer le modèle.</li>
+                <li>Éviter les prompts énormes si le modèle est déjà lent.</li>
+                <li>Tester un modèle spécialisé plutôt qu'un gros généraliste.</li>
+                <li>Comparer plusieurs modèles avec les mêmes questions.</li>
+            </ul>
+
+            <p>Un mini-test utile :</p>
+            <pre class="code-block"><code>1. Pose une question simple.
+2. Demande une explication technique.
+3. Donne un petit bout de code à corriger.
+4. Demande une réponse en français.
+5. Note la vitesse, la qualité et les hallucinations.</code></pre>
+
+            <div class="article-callout info">
+                <p class="callout-title">Méthode</p>
+                <p>
+                    Ne testez pas seulement si le modèle répond. Testez s'il répond assez vite pour être agréable.
+                    Un modèle excellent mais trop lent finit souvent abandonné après deux jours.
+                </p>
+            </div>
+        </section>
+
+        <section class="article-section" id="api">
+            <h2>7. Ollama comme brique pour d'autres outils</h2>
+            <p>
+                Ollama ne sert pas seulement à discuter dans un terminal. Il peut aussi se comporter comme un
+                petit serveur local. D'autres outils peuvent alors lui envoyer des prompts : une interface Web,
+                un script Python, une extension d'éditeur, ou même un agent IA.
+            </p>
+
+            <div class="article-diagram">
+                <span>Script / WebUI / Agent</span>
+                <span>→</span>
+                <span>Ollama</span>
+                <span>→</span>
+                <span>Modèle local</span>
+                <span>→</span>
+                <span>Réponse</span>
+            </div>
+
+            <p>On peut par exemple appeler l'API locale avec <code>curl</code> :</p>
+            <pre class="code-block"><code>curl http://localhost:11434/api/generate -d '{
+  "model": "llama3.2:3b",
+  "prompt": "Explique Flask en 5 lignes.",
+  "stream": false
+}'</code></pre>
+
+            <p>
+                Cette idée est très importante pour la suite : une fois qu'un modèle local est accessible via une
+                API, il peut devenir une brique dans un workflow plus grand. Ce n'est plus seulement un chatbot,
+                c'est un composant utilisable dans un projet.
+            </p>
+
+            <div class="article-callout warning">
+                <p class="callout-title">Attention</p>
+                <p>
+                    Brancher un modèle local à un outil ne le rend pas soudainement fiable. Il faut toujours
+                    vérifier ses réponses, surtout quand il écrit du code ou propose des commandes à exécuter.
+                </p>
+            </div>
+        </section>
+
+        <section class="article-section" id="suite">
+            <h2>8. Et après ? Aller plus loin</h2>
+            <p>
+                Ollama est une bonne porte d'entrée parce qu'il simplifie beaucoup de choses. Mais ce n'est pas
+                la seule manière de faire tourner des modèles localement, et ce n'est pas la fin du sujet.
+            </p>
+
+            <p>Quelques pistes à explorer ensuite :</p>
+            <ul class="article-list">
+                <li><strong>Open WebUI</strong> : une interface type ChatGPT branchée sur Ollama.</li>
+                <li><strong>llama.cpp</strong> : plus bas niveau, plus flexible, très utilisé pour les modèles quantizés.</li>
+                <li><strong>Modèles spécialisés</strong> : code, maths, français, résumé, agents, etc.</li>
+                <li><strong>MoE</strong> : modèles à mélange d'experts, qui n'activent qu'une partie du modèle à chaque étape.</li>
+                <li><strong>Colibri et outils similaires</strong> : pistes plus niches pour faire tourner certains modèles experts avec moins de mémoire.</li>
+                <li><strong>Agents IA</strong> : outils capables de lire des fichiers, modifier du code et lancer des commandes.</li>
+            </ul>
+
+            <div class="article-callout info">
+                <p class="callout-title">À garder en tête</p>
+                <p>
+                    Les MoE, Colibri et les optimisations avancées sont passionnants, mais ce n'est pas le point
+                    de départ. Commencez par faire tourner un modèle simple, comprendre ses limites, puis explorez.
+                </p>
+            </div>
+        </section>
+
+        <section class="article-section" id="conclusion">
+            <h2>Conclusion</h2>
+            <p>
+                Ce tuto ne cherche pas à faire de vous des experts en LLM, quantization ou GPU. Il cherche à vous
+                donner un modèle mental solide : une IA locale, c'est un modèle, un moteur d'exécution et des
+                contraintes matérielles.
+            </p>
+            <p>
+                Si vous savez installer Ollama, lancer un modèle et choisir un compromis adapté à votre machine,
+                vous pouvez commencer à utiliser l'IA locale dans vos projets sans dépendre entièrement des
+                services cloud.
+            </p>
+
+            <div class="article-callout tldr">
+                <p class="callout-title">Phrase à garder</p>
+                <p>
+                    Le bon modèle local n'est pas celui qui impressionne sur un benchmark. C'est celui que vous
+                    pouvez réellement faire tourner, tester et intégrer dans vos projets.
+                </p>
+            </div>
+
+            <p>
+                Dans le prochain tuto, on pourra utiliser cette brique locale pour créer un vrai workflow avec
+                des agents IA : lire des fichiers, modifier du code, lancer des commandes et automatiser des tâches.
+            </p>
+        </section>
+    </article>
+</div>
+{% endblock %}

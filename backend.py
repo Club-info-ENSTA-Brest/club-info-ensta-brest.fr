@@ -476,6 +476,11 @@ def tuto_webapp_flask():
     return render("tutos/tuto-webapp-flask.html")
 
 
+@app.route("/tutos/tuto-ia-locale-ollama")
+def tuto_ia_locale_ollama():
+    return render("tutos/tuto-ia-locale-ollama.html")
+
+
 @app.route("/reseaux")
 def reseaux():
     return render("reseaux.html")
