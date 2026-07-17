@@ -1,10 +1,10 @@
-{% for project in data[:20] %}
+{% for project in data %}
 <div
     class="card{% if project.link %} card-clickable{% endif %}"
     {% if project.link %}onclick="window.open('{{ project.link }}', '_blank')"{% endif %}
 >
     {% if project.image %}
-    <img class="card-img" src="{{ project.image }}" alt="">
+    <img class="card-img" src="{{ project.image }}" alt="" loading="lazy">
     {% else %}
     <div class="card-img card-img-placeholder">
         <i class="fa-solid fa-code"></i>
@@ -28,7 +28,9 @@
     </div>
 </div>
 {% else %}
-<div class="empty-results">
-    <p>Aucun projet ne correspond à cette recherche.</p>
-</div>
+    {% if show_empty|default(true) %}
+    <div class="empty-results">
+        <p>Aucun projet ne correspond à cette recherche.</p>
+    </div>
+    {% endif %}
 {% endfor %}

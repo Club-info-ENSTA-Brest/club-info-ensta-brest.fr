@@ -21,8 +21,27 @@
     </div>
 </div>
 <div class="home-content-wrapper">
+    <div class="project-cache-status">
+        <span>{{ total_projects }} projets indexés</span>
+        <span>GitLab synchronisé {{ cache_age_label }}</span>
+        {% if refresh_started %}
+            <span>Mise à jour en arrière-plan…</span>
+        {% endif %}
+    </div>
+
     <div class="home-content" id="project-results">
         {% include "_project_cards.html" %}
+
+        {% if has_more %}
+        <button
+            class="load-more-projects"
+            hx-get="{{ url_for('more_projets_enstasiens', offset=next_offset) }}"
+            hx-target="this"
+            hx-swap="outerHTML"
+        >
+            Charger plus de projets
+        </button>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

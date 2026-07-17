@@ -1,5 +1,6 @@
 import os
 import sqlite3
+import threading
 from datetime import datetime, timedelta
 from difflib import SequenceMatcher
 from urllib.parse import urljoin, urlparse
@@ -29,6 +30,11 @@ GITLAB_API_URL = "https://gitlab.ensta-bretagne.fr/api/v4/projects"
 GITLAB_CACHE_TTL = timedelta(hours=6)
 GITLAB_MAX_PAGES = 5
 GITLAB_PER_PAGE = 100
+PROJECTS_INITIAL_LIMIT = 12
+PROJECTS_PAGE_LIMIT = 8
+PROJECTS_SEARCH_LIMIT = 30
+_gitlab_refresh_lock = threading.Lock()
+_gitlab_refresh_running = False
 
 
 
@@ -227,12 +233,32 @@ def upsert_gitlab_projects(projects):
 def refresh_gitlab_projects_if_needed(force=False):
     cache_age = get_gitlab_cache_age()
     if not force and cache_age is not None and cache_age < GITLAB_CACHE_TTL:
-        return
+        return False
 
     try:
         upsert_gitlab_projects(fetch_gitlab_projects())
+        return True
     except requests.RequestException as error:
         print(f"Failed to refresh GitLab projects: {error}")
+        return False
+
+
+def format_cache_age(cache_age):
+    if cache_age is None:
+        return "jamais synchronisé"
+
+    total_seconds = max(0, int(cache_age.total_seconds()))
+    minutes = total_seconds // 60
+    hours = minutes // 60
+    days = hours // 24
+
+    if minutes < 1:
+        return "à l'instant"
+    if minutes < 60:
+        return f"il y a {minutes} min"
+    if hours < 24:
+        return f"il y a {hours} h"
+    return f"il y a {days} j"
 
 
 def create_db():
@@ -362,9 +388,7 @@ def fuzzy_match_score(query, project):
     return SequenceMatcher(None, query, haystack).ratio()
 
 
-def get_enstasien_projects(search_query=""):
-    refresh_gitlab_projects_if_needed()
-
+def get_enstasien_projects(search_query="", limit=PROJECTS_INITIAL_LIMIT, offset=0):
     db = get_db()
     local_projects = [
         dict(project)
@@ -380,27 +404,61 @@ def get_enstasien_projects(search_query=""):
             SELECT title, description, author, date, image, type, link
             FROM gitlab_projects
             ORDER BY date DESC
-            LIMIT 200
+            LIMIT 300
             """
         ).fetchall()
     ]
 
     projects = local_projects + gitlab_projects
     search_query = (search_query or "").strip()
-    if not search_query:
-        return projects[:80]
 
-    scored_projects = [
-        (fuzzy_match_score(search_query, project), project) for project in projects
-    ]
+    if search_query:
+        scored_projects = [
+            (fuzzy_match_score(search_query, project), project) for project in projects
+        ]
+        projects = [
+            project
+            for score, project in sorted(
+                scored_projects, key=lambda item: item[0], reverse=True
+            )
+            if score >= 0.65
+        ]
 
-    return [
-        project
-        for score, project in sorted(
-            scored_projects, key=lambda item: item[0], reverse=True
-        )
-        if score >= 0.65
-    ][:80]
+    total = len(projects)
+    end = offset + limit
+    return {
+        "projects": projects[offset:end],
+        "total": total,
+        "offset": offset,
+        "limit": limit,
+        "next_offset": end,
+        "has_more": end < total,
+    }
+
+
+def trigger_gitlab_refresh_in_background_if_needed(force=False):
+    global _gitlab_refresh_running
+
+    cache_age = get_gitlab_cache_age()
+    if not force and cache_age is not None and cache_age < GITLAB_CACHE_TTL:
+        return False
+
+    with _gitlab_refresh_lock:
+        if _gitlab_refresh_running:
+            return True
+        _gitlab_refresh_running = True
+
+    def refresh_task():
+        global _gitlab_refresh_running
+        try:
+            with app.app_context():
+                refresh_gitlab_projects_if_needed(force=force)
+        finally:
+            with _gitlab_refresh_lock:
+                _gitlab_refresh_running = False
+
+    threading.Thread(target=refresh_task, daemon=True).start()
+    return True
 
 
 @app.route("/")
@@ -425,13 +483,50 @@ def reseaux():
 
 @app.route("/projets_enstasiens")
 def projets_enstasiens():
-    return render("projets_enstasiens.html", data=get_enstasien_projects())
+    refresh_started = trigger_gitlab_refresh_in_background_if_needed()
+    cache_age = get_gitlab_cache_age()
+    page = get_enstasien_projects(limit=PROJECTS_INITIAL_LIMIT)
+    return render_template(
+        "projets_enstasiens.html",
+        data=page["projects"],
+        total_projects=page["total"],
+        next_offset=page["next_offset"],
+        has_more=page["has_more"],
+        cache_age_label=format_cache_age(cache_age),
+        refresh_started=refresh_started,
+        htmx=request.headers.get("HX-Request"),
+    )
+
+
+@app.route("/projets_enstasiens/more")
+def more_projets_enstasiens():
+    offset = max(0, request.args.get("offset", default=0, type=int))
+    limit = min(24, max(1, request.args.get("limit", default=PROJECTS_PAGE_LIMIT, type=int)))
+    page = get_enstasien_projects(limit=limit, offset=offset)
+    return render_template(
+        "_project_load_more.html",
+        data=page["projects"],
+        next_offset=page["next_offset"],
+        has_more=page["has_more"],
+        show_empty=False,
+    )
 
 
 @app.route("/projets_enstasiens/search")
 def search_projets_enstasiens():
-    projects = get_enstasien_projects(request.args.get("q", ""))
-    return render_template("_project_cards.html", data=projects)
+    query = request.args.get("q", "").strip()
+    if not query:
+        page = get_enstasien_projects(limit=PROJECTS_INITIAL_LIMIT)
+        return render_template(
+            "_project_load_more.html",
+            data=page["projects"],
+            next_offset=page["next_offset"],
+            has_more=page["has_more"],
+            show_empty=True,
+        )
+
+    page = get_enstasien_projects(query, limit=PROJECTS_SEARCH_LIMIT)
+    return render_template("_project_cards.html", data=page["projects"], show_empty=True)
 
 
 # handle requests
